@@ -1,0 +1,24 @@
+{
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@account-abstraction/contracts": "^0.6.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "dotenv": "^16.4.5",
+    "ethereumjs-util": "^7.1.5",
+    "ethers": "^5.7.0",
+    "quickchart-js": "^3.1.3",
+    "rlp": "^3.0.0"
+  },
+  "scripts": {
+    "build": "npx hardhat compile",
+    "estimate": "ts-node scripts/estimate/main.ts",
+    "draw-graph": "ts-node scripts/graph/index.ts"
+  },
+  "lib": [
+    "ES2020",
+    "esnext",
+    "dom"
+  ]
+}

@@ -1,0 +1,39 @@
+import { UserOperation } from "../types/erc4337UserOp";
+import { BytesLike, ethers } from "ethers";
+import { signUserOp } from "./signErc4337UserOp";
+import { Entrypoint_V0_6_Address } from "../types/constants";
+
+export function constructUserOp(
+    chainId?: BytesLike,
+    sender?: string,
+    data?: BytesLike,
+    wallet?: ethers.Wallet,
+    initCode?: BytesLike,
+): UserOperation {
+    let userOp: UserOperation = {
+        sender: sender ?? '0x',
+        nonce: 0,
+        initCode: initCode ?? '0x',
+        callData: data ?? '0x',
+        callGasLimit: 1_000_000,
+        verificationGasLimit: 1_000_000,
+        preVerificationGas: 1, 
+        maxFeePerGas: 1,
+        maxPriorityFeePerGas: 1e9,
+        paymasterAndData: '0x',
+        signature: getDummySignature(),
+    }
+    if (wallet) {
+        let id = Number(chainId) ?? 901;
+        userOp.signature = signUserOp(userOp, wallet, Entrypoint_V0_6_Address, id).signature;
+    }
+    return userOp;
+}
+
+export function getDummySignature(): BytesLike {
+    return '0xce3692b3287f4cc42531c32397f14159670d627ce8dae0abb6c8f15d332dddf0';
+}
+
+export function getRandomAddress(): string {
+    return '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
+}
