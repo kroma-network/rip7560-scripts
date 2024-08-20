@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "hardhat": "^2.22.8",
     "typescript": "^5.5.4"
   },
   "dependencies": {
