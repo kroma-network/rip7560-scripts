@@ -18,6 +18,7 @@ contract Rip7560SimpleAccount is
     Initializable
 {
     using MessageHashUtils for bytes32;
+    using ECDSA for bytes32;
 
     address public owner;
 
@@ -119,13 +120,12 @@ contract Rip7560SimpleAccount is
         bytes32 txHash
     ) internal virtual override returns (bytes32 validationData) {
         // TODO: find better way to decode transaction
-        bytes memory signature = transaction[transaction.length - 32:];
-        bytes32 hash = txHash.toEthSignedMessageHash();
-        (address recoveredAddr, ECDSA.RecoverError err, ) = ECDSA.tryRecover(
-            hash,
-            signature
+        TransactionType4 memory _tx = abi.decode(
+            transaction,
+            (TransactionType4)
         );
-        if (err != ECDSA.RecoverError.NoError || recoveredAddr != owner) {
+        bytes32 hash = txHash.toEthSignedMessageHash();
+        if (owner != hash.recover(_tx.signature)) {
             return _packValidationData(MAGIC_VALUE_SIGFAIL, 0, 0);
         }
         return _packValidationData(MAGIC_VALUE_SENDER, 0, 0);
