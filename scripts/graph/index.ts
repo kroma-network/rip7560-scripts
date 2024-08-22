@@ -37,6 +37,9 @@ async function drawGraph(filePath: string, name: string) {
     const labels = Object.keys(jsonData);
     const data = Object.values(jsonData).map(Number);
 
+    console.log('Labels: ', labels);
+    console.log('Data: ', data);
+
     // Create a new QuickChart instance
     const chart = new QuickChart();
     chart.setWidth(800);
@@ -50,7 +53,6 @@ async function drawGraph(filePath: string, name: string) {
             labels: labels,
             datasets: [
                 {
-                    label: 'Gas Used',
                     data: data,
                     backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)'],
                     borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
@@ -63,20 +65,30 @@ async function drawGraph(filePath: string, name: string) {
             title: {
                 display: true,
                 text: `Gas Usage Comparison for ${title}: ERC-4337 vs RIP-7560`,
-                fontSize: 16,
+                fontSize: 26,
+                padding: 20,
             },
             scales: {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true, 
+                        fontSize: 16,
                     },
                     scaleLabel: {
                         display: true,
                         labelString: 'Gas Usage',
-                        fontSize: 16,
+                        fontSize: 20,
                     }
                 }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 20,
+                    },
+                }],
             },
+            legend: {
+                display: false,
+            }
         },
     });
     const chartImageBuffer = await chart.toBinary();
