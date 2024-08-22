@@ -33,7 +33,7 @@ export function constructRip7560Transaction(
 }
 
 export function getDummySignature(): BytesLike {
-    return '0xce3692b3287f4cc42531c32397f14159670d627ce8dae0abb6c8f15d332dddf0';
+    return '0xfffffffffffffffffffffffffffffff0000000000000000000000000000000007aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1c';
 }
 
 export function getRandomAddress(): string {

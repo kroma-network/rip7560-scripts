@@ -23,15 +23,15 @@ export function constructUserOp(
         paymasterAndData: '0x',
         signature: getDummySignature(),
     }
-    if (wallet) {
-        let id = Number(chainId) ?? 901;
-        userOp.signature = signUserOp(userOp, wallet, Entrypoint_V0_6_Address, id).signature;
-    }
+    // if (wallet) {
+    //     let id = Number(chainId) ?? 901;
+    //     userOp.signature = signUserOp(userOp, wallet, Entrypoint_V0_6_Address, id).signature;
+    // }
     return userOp;
 }
 
 export function getDummySignature(): BytesLike {
-    return '0xce3692b3287f4cc42531c32397f14159670d627ce8dae0abb6c8f15d332dddf0';
+    return '0xfffffffffffffffffffffffffffffff0000000000000000000000000000000007aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1c';
 }
 
 export function getRandomAddress(): string {
