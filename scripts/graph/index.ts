@@ -37,9 +37,6 @@ async function drawGraph(filePath: string, name: string) {
     const labels = Object.keys(jsonData);
     const data = Object.values(jsonData).map(Number);
 
-    console.log('Labels: ', labels);
-    console.log('Data: ', data);
-
     // Create a new QuickChart instance
     const chart = new QuickChart();
     chart.setWidth(800);
