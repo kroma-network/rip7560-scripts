@@ -3,7 +3,7 @@ import { BytesLike } from "ethers";
 
 export function constructRip7560Transaction(
     chainId: BytesLike,
-    bigNonce?: BytesLike,
+    nonce?: BytesLike,
     sender?: string,
     data?: BytesLike,
     deployer?: string,
@@ -13,16 +13,16 @@ export function constructRip7560Transaction(
 ): Rip7560Transaction {
     return {
         chainId: chainId,
-        bigNonce: bigNonce ?? '0x0',
+        nonce: nonce ?? '0x0',
+        nonceKey: '0x0',
         sender: sender ?? '0x',
-        data: data ?? '0x',
+        executionData: data ?? '0x',
         builderFee: '0x0', 
         maxPriorityFeePerGas: '0x1',
         maxFeePerGas: '0x3B9ACA00', // 1e9
         validationGas: '0xF4240',
         gas: '0xF4240',
-        subType: '0x1',
-        signature: getDummySignature(),
+        authorizationData: getDummyAuthorizationData(),
         deployer: deployer ?? null,
         deployerData: deployerData ?? "0x",
         paymaster: paymaster ?? null,
@@ -32,7 +32,7 @@ export function constructRip7560Transaction(
     }
 }
 
-export function getDummySignature(): BytesLike {
+export function getDummyAuthorizationData(): BytesLike {
     return '0xfffffffffffffffffffffffffffffff0000000000000000000000000000000007aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1c';
 }
 

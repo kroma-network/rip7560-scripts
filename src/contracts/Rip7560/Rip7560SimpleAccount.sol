@@ -125,7 +125,7 @@ contract Rip7560SimpleAccount is
             (TransactionType4)
         );
         bytes32 hash = txHash.toEthSignedMessageHash();
-        if (owner != hash.recover(_tx.signature)) {
+        if (owner != hash.recover(_tx.authorizationData)) {
             return _packValidationData(MAGIC_VALUE_SIGFAIL, 0, 0);
         }
         return _packValidationData(MAGIC_VALUE_SENDER, 0, 0);

@@ -13,9 +13,10 @@ export function getRlpHash(rip7560Transaction: Rip7560Transaction): string {
 function _encode(rip7560Transaction: Rip7560Transaction): Uint8Array {
     const encoded = encode([
         rip7560Transaction.chainId.toString(),
-        Number(rip7560Transaction.bigNonce),
+        Number(rip7560Transaction.nonceKey),
+        Number(rip7560Transaction.nonce),
         rip7560Transaction.sender,
-        rip7560Transaction.data.toString(),
+        rip7560Transaction.executionData.toString(),
         Number(rip7560Transaction.builderFee),
         Number(rip7560Transaction.maxPriorityFeePerGas),
         Number(rip7560Transaction.maxFeePerGas),

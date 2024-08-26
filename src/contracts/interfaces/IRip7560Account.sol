@@ -3,6 +3,7 @@ pragma solidity ^0.8.12;
 
 struct TransactionType4 {
     address sender;
+    uint256 nonceKey;
     uint256 nonce;
     uint256 validationGasLimit;
     uint256 paymasterGasLimit;
@@ -15,8 +16,8 @@ struct TransactionType4 {
     bytes paymasterData;
     address deployer;
     bytes deployerData;
-    bytes callData;
-    bytes signature;
+    bytes executionData;
+    bytes authorizationData;
 }
 
 interface IRip7560Account {

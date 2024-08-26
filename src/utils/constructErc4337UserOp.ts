@@ -23,10 +23,6 @@ export function constructUserOp(
         paymasterAndData: '0x',
         signature: getDummySignature(),
     }
-    // if (wallet) {
-    //     let id = Number(chainId) ?? 901;
-    //     userOp.signature = signUserOp(userOp, wallet, Entrypoint_V0_6_Address, id).signature;
-    // }
     return userOp;
 }
 

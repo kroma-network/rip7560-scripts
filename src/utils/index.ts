@@ -1,6 +1,6 @@
 import {
     constructRip7560Transaction,
-    getDummySignature,
+    getDummyAuthorizationData,
     getRandomAddress
 } from "./constructRip7560Transaction";
 import { constructUserOp } from "./constructErc4337UserOp";
@@ -14,7 +14,7 @@ import { getChainId } from "./getChainId";
 export {
     constructRip7560Transaction,
     constructUserOp,
-    getDummySignature,
+    getDummyAuthorizationData,
     getRandomAddress,
     getRlpHash,
     getCallData,
