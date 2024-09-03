@@ -67,6 +67,7 @@ export async function deployAccountWithFactory(factoryAddress: string, factoryAr
 
     await tx.wait();
     const deployedAddress = await factory.callStatic.createAccount(wallet.address, salt);
+    console.log(`Account contract deployed at address: ${deployedAddress}`);
 
     return deployedAddress;
 }

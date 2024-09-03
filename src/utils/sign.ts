@@ -47,7 +47,6 @@ export async function signRip7560Transaction(transaction: Rip7560Transaction): P
   }
   signer = new Wallet(process.env.PRIVATE_KEY, provider);
   const hash = getRlpHash(transaction)
-  console.log('hash', hash)
   const sig = await signer.signMessage(arrayify(hash))
   return sig
 }

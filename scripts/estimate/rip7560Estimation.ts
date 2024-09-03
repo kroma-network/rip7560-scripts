@@ -25,7 +25,7 @@ export async function estimate7560EthTransferGasLegacyNonce(account: string, val
     const chainId = await getChainId();
     const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
 
-    const estimateRes = await _estimateRip7560TransactionGasLimit(rip7560Transaction);
+    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
     return estimateRes;
 }
 
@@ -36,7 +36,7 @@ export async function estimate7560EthTransferGasNonceManager(account: string, ke
     const chainId = await getChainId();
     const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
 
-    const estimateRes = _estimateRip7560TransactionGasLimit(rip7560Transaction);
+    const estimateRes = estimateRip7560TransactionGasLimit(rip7560Transaction);
     return estimateRes;
 }
 
@@ -53,7 +53,7 @@ export async function estimate7560Erc20TransferGasLegacyNonce(account: string, e
 
     const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
 
-    const estimateRes = await _estimateRip7560TransactionGasLimit(rip7560Transaction);
+    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
     return estimateRes;
 }
 
@@ -66,7 +66,7 @@ export async function estimate7560Erc20TransferGasNonceManager(account: string, 
 
     const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
 
-    const estimateRes = _estimateRip7560TransactionGasLimit(rip7560Transaction);
+    const estimateRes = estimateRip7560TransactionGasLimit(rip7560Transaction);
     return estimateRes;
 }
 
@@ -80,7 +80,7 @@ export async function estimate7560DeploymentGasLegacyNonce(owner: string, factor
 
     const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData, factory, deployerData);
 
-    const estimateRes = await _estimateRip7560TransactionGasLimit(rip7560Transaction);
+    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
     return estimateRes;
 }
 
@@ -93,12 +93,12 @@ export async function estimate7560DeploymentGasNonceManager(owner: string, facto
 
     const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData, factory, deployerData);
 
-    const estimateRes = await _estimateRip7560TransactionGasLimit(rip7560Transaction);
+    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
     return estimateRes;
 }
 
 
-async function _estimateRip7560TransactionGasLimit(
+export async function estimateRip7560TransactionGasLimit(
     rip7560Transaction: Rip7560Transaction
 ): Promise<EstimateRip7560TransactionGasResponse> {
     const response = await fetch(

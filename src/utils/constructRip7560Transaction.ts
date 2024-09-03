@@ -39,3 +39,8 @@ export function getDummyAuthorizationData(): BytesLike {
 export function getRandomAddress(): string {
     return '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
 }
+
+export function increaseGasLimit(gasLimit: BytesLike): BytesLike {
+    let gasLimitNum = Math.round(Number(gasLimit) * 1.1);
+    return '0x' + gasLimitNum.toString(16);
+}

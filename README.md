@@ -66,6 +66,21 @@ After running the estimations, you can generate a graph to visualize the gas usa
 npm run draw-graph
 ```
 
+### RIP-7560 Send Transaction
+
+To send a RIP-7560 transaction to Pioneer Alpha, run the following command.
+
+```
+npm run send-tx
+```
+
+If you already deployed a RIP-7560 Account and has its address, you can simply run this command
+to skip the deployment process.
+
+```
+npm run send-tx --address <ACCOUNT_ADDRESS>
+```
+
 ### Additional Resources
 
 - For more detailed information, please refer to the [official documentation](https://docs.pioneer.kroma.network).

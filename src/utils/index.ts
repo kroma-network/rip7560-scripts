@@ -1,7 +1,8 @@
 import {
     constructRip7560Transaction,
     getDummyAuthorizationData,
-    getRandomAddress
+    getRandomAddress,
+    increaseGasLimit
 } from "./constructRip7560Transaction";
 import { constructUserOp } from "./constructErc4337UserOp";
 import { getCallData } from "./getCallData";
@@ -20,6 +21,7 @@ export {
     constructUserOp,
     getDummyAuthorizationData,
     getRandomAddress,
+    increaseGasLimit,
     getCallData,
     getDeployerData,
     getAddress,
