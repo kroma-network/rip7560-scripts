@@ -1,46 +1,63 @@
 import { Wallet, ethers } from 'ethers'
+import dotenv from 'dotenv'
 import { arrayify, keccak256 } from 'ethers/lib/utils'
 import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
 import { UserOperation } from '../types/erc4337UserOp'
-import { encode } from "rlp";
 import { Rip7560Transaction } from '../types/rip7560Transaction'
-import { Rip7560TransactionType } from "../types/constants";
+import {encode} from '@ethersproject/rlp';
+import { BigNumber } from 'ethers';
+import { stripZeros } from '@ethersproject/bytes';
 
-export function getUserOpHash (op: UserOperation, entryPoint: string, chainId: number): string {
-    const userOpHash = keccak256(encodeUserOp(op, true))
-    const enc = ethers.utils.defaultAbiCoder.encode(
-        ['bytes32', 'address', 'uint256'],
-        [userOpHash, entryPoint, chainId])
-    return keccak256(enc)
-}
+dotenv.config()
 
 export function getRlpHash(rip7560Transaction: Rip7560Transaction): string {
   const encoded = _encode(rip7560Transaction);
-  const encodedToHex = ethers.utils.hexlify(encoded);
-  const hash = ethers.utils.keccak256(Rip7560TransactionType + encodedToHex.substring(2));
-  return hash;
+  const encodedToHex = ethers.utils.hexConcat(['0x04', encoded]);
+  return ethers.utils.keccak256(encodedToHex);
 }
 
-function _encode(rip7560Transaction: Rip7560Transaction): Uint8Array {
+function _encode(rip7560Transaction: Rip7560Transaction): string {
   const encoded = encode([
-      rip7560Transaction.chainId.toString(),
-      Number(rip7560Transaction.nonceKey),
-      Number(rip7560Transaction.nonce),
+      formatNumber(rip7560Transaction.chainId),
+      formatNumber(rip7560Transaction.nonce),
+      formatNumber(rip7560Transaction.nonceKey || '0x0'),
       rip7560Transaction.sender,
-      rip7560Transaction.executionData.toString(),
-      Number(rip7560Transaction.builderFee),
-      Number(rip7560Transaction.maxPriorityFeePerGas),
-      Number(rip7560Transaction.maxFeePerGas),
-      Number(rip7560Transaction.validationGas),
-      Number(rip7560Transaction.gas),
-      rip7560Transaction.deployer,
-      rip7560Transaction.deployerData?.toString(),
-      rip7560Transaction.paymaster,
-      rip7560Transaction.paymasterData?.toString(),
-      Number(rip7560Transaction.paymasterGas),
-      Number(rip7560Transaction.postOpGas),
+      rip7560Transaction.deployer || '0x',
+      rip7560Transaction.deployerData,
+      rip7560Transaction.paymaster || '0x',
+      rip7560Transaction.paymasterData,
+      rip7560Transaction.executionData,
+      formatNumber(rip7560Transaction.builderFee),
+      formatNumber(rip7560Transaction.maxPriorityFeePerGas),
+      formatNumber(rip7560Transaction.maxFeePerGas),
+      formatNumber(rip7560Transaction.verificationGasLimit),
+      formatNumber(rip7560Transaction.paymasterVerificationGasLimit),
+      formatNumber(rip7560Transaction.paymasterPostOpGasLimit),
+      formatNumber(rip7560Transaction.gas),
+      [], // Accesslist
   ]);
   return encoded;
+}
+
+export async function signRip7560Transaction(transaction: Rip7560Transaction): Promise<string> {
+  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+  let signer: Wallet;
+  if (process.env.PRIVATE_KEY === undefined) {
+      throw new Error('PRIVATE_KEY is not set');
+  }
+  signer = new Wallet(process.env.PRIVATE_KEY, provider);
+  const hash = getRlpHash(transaction)
+  console.log('hash', hash)
+  const sig = await signer.signMessage(arrayify(hash))
+  return sig
+}
+
+export function getUserOpHash (op: UserOperation, entryPoint: string, chainId: number): string {
+  const userOpHash = keccak256(encodeUserOp(op, true))
+  const enc = ethers.utils.defaultAbiCoder.encode(
+      ['bytes32', 'address', 'uint256'],
+      [userOpHash, entryPoint, chainId])
+  return keccak256(enc)
 }
 
 export function encodeUserOp (userOp: UserOperation, forSignature = true): string {
@@ -78,8 +95,6 @@ export function signUserOp (op: UserOperation, signer: Wallet, entryPoint: strin
     return signedMessage1
 }
 
-export async function signRip7560Transaction(transaction: Rip7560Transaction, signer: Wallet): Promise<string> {
-    const hash = getRlpHash(transaction)
-    const sig = await signer.signMessage(arrayify(hash))
-    return sig
+function formatNumber(value: ethers.utils.BytesLike): Uint8Array {
+    return stripZeros(BigNumber.from(Number(value)).toHexString());
 }

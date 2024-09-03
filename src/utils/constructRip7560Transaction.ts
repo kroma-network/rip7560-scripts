@@ -20,15 +20,15 @@ export function constructRip7560Transaction(
         builderFee: '0x0', 
         maxPriorityFeePerGas: '0x1',
         maxFeePerGas: '0x3B9ACA00', // 1e9
-        validationGas: '0xF4240',
+        verificationGasLimit: '0xF4240',
         gas: '0xF4240',
         authorizationData: getDummyAuthorizationData(),
         deployer: deployer ?? null,
         deployerData: deployerData ?? "0x",
         paymaster: paymaster ?? null,
         paymasterData: paymasterData ?? "0x",
-        paymasterGas: paymaster? '0xF4240' : '0x0',
-        postOpGas: paymaster ? '0xF4240' : '0x0',
+        paymasterVerificationGasLimit: paymaster? '0xF4240' : '0x0',
+        paymasterPostOpGasLimit: paymaster ? '0xF4240' : '0x0',
     }
 }
 
