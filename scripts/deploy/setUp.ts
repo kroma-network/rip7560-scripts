@@ -1,7 +1,11 @@
 import path from 'path';
 import fs from 'fs';
 import { ethers } from 'ethers';
-import { deployContract, deployContractWithConstructor } from './deployContract';
+import { 
+    deployContract,
+    deployContractWithConstructor,
+    deployAccountWithFactory
+} from './deployContract';
 import { Entrypoint_V0_6_Address } from '../../src/types/constants';
 
 export type Accounts = {
@@ -79,4 +83,32 @@ export async function setUpErc20(addr1: string, addr2: string) {
     console.log(`Minted 1000 tokens to ${addr2}`);
 
     return erc20Addr;
+}
+
+export async function setUpFactoryAndAccount(): Promise<string> {
+    // Deploy AccountFactory contract
+    const contractArtifactPath = path.resolve(
+        __dirname,
+        '../../artifacts/src/contracts/Rip7560/Rip7560SimpleAccountFactory.sol/Rip7560SimpleAccountFactory.json'
+    );
+    const artifact = JSON.parse(fs.readFileSync(contractArtifactPath, 'utf8'));
+    const factoryContract = await deployContract(artifact, 'RIP-7560 SimpleAccountFactory');
+
+    const account = await deployAccountWithFactory(factoryContract.address, artifact, 1);
+
+    // Set up the provider and wallet
+    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+
+    // Fund the target smart accounts
+    console.log(`Sending 0.1 ETH to ${account}...`);
+    let tx = await wallet.sendTransaction({
+        from: wallet.address,
+        to: account,
+        value: ethers.utils.parseEther('0.1'),
+    });
+    await tx.wait();
+    console.log(`Sent 0.1 ETH to ${account}`);
+
+    return account;
 }
