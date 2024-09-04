@@ -16,7 +16,8 @@
   "scripts": {
     "build": "npx hardhat compile",
     "estimate": "ts-node scripts/estimate/main.ts",
-    "draw-graph": "ts-node scripts/graph/index.ts"
+    "draw-graph": "ts-node scripts/graph/index.ts",
+    "send-tx": "ts-node scripts/sendTransaction/index.ts"
   },
   "lib": [
     "ES2020",

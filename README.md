@@ -48,6 +48,7 @@ Open the .env file in your preferred text editor and add your wallet's private k
 ```
 WALLET=<your-private-key-here>
 RPC_URL=https://api.pioneer.kroma.network
+BUNDLER_URL=https://bundler.pioneer.kroma.network
 ```
 
 Replace <your-private-key-here> with the private key of your wallet. Ensure this key is kept secure and never shared publicly.
@@ -64,6 +65,21 @@ After running the estimations, you can generate a graph to visualize the gas usa
 
 ```
 npm run draw-graph
+```
+
+### RIP-7560 Send Transaction
+
+To send a RIP-7560 transaction to Pioneer Alpha, run the following command.
+
+```
+npm run send-tx
+```
+
+If you already deployed a RIP-7560 Account and has its address, you can simply run this command
+to skip the deployment process.
+
+```
+npm run send-tx --address <ACCOUNT_ADDRESS>
 ```
 
 ### Additional Resources

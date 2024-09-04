@@ -1,7 +1,5 @@
 import { UserOperation } from "../types/erc4337UserOp";
 import { BytesLike, ethers } from "ethers";
-import { signUserOp } from "./signErc4337UserOp";
-import { Entrypoint_V0_6_Address } from "../types/constants";
 
 export function constructUserOp(
     chainId?: BytesLike,

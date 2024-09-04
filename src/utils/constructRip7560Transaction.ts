@@ -20,15 +20,15 @@ export function constructRip7560Transaction(
         builderFee: '0x0', 
         maxPriorityFeePerGas: '0x1',
         maxFeePerGas: '0x3B9ACA00', // 1e9
-        validationGas: '0xF4240',
+        verificationGasLimit: '0xF4240',
         gas: '0xF4240',
         authorizationData: getDummyAuthorizationData(),
         deployer: deployer ?? null,
         deployerData: deployerData ?? "0x",
         paymaster: paymaster ?? null,
         paymasterData: paymasterData ?? "0x",
-        paymasterGas: paymaster? '0xF4240' : '0x0',
-        postOpGas: paymaster ? '0xF4240' : '0x0',
+        paymasterVerificationGasLimit: paymaster? '0xF4240' : '0x0',
+        paymasterPostOpGasLimit: paymaster ? '0xF4240' : '0x0',
     }
 }
 
@@ -38,4 +38,9 @@ export function getDummyAuthorizationData(): BytesLike {
 
 export function getRandomAddress(): string {
     return '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
+}
+
+export function increaseGasLimit(gasLimit: BytesLike): BytesLike {
+    let gasLimitNum = Math.round(Number(gasLimit) * 1.1);
+    return '0x' + gasLimitNum.toString(16);
 }

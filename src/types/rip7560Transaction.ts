@@ -3,20 +3,20 @@ import { BytesLike } from 'ethers'
 export type Rip7560Transaction = {
     chainId: BytesLike;
     nonce: BytesLike;
-    nonceKey: BytesLike;
+    nonceKey: BytesLike | null;
     sender: string;
     executionData: BytesLike;
     builderFee: BytesLike;
     maxPriorityFeePerGas: BytesLike;
     maxFeePerGas: BytesLike;
-    validationGas: BytesLike;
+    verificationGasLimit: BytesLike;
     gas: BytesLike;
     deployer: string | null;
-    deployerData: BytesLike | null;
+    deployerData: BytesLike;
     paymaster: string | null;
-    paymasterData: BytesLike | null;
-    paymasterGas: BytesLike;
-    postOpGas: BytesLike;
+    paymasterData: BytesLike;
+    paymasterVerificationGasLimit: BytesLike;
+    paymasterPostOpGasLimit: BytesLike;
     authorizationData: BytesLike;
 }
 
