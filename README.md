@@ -48,6 +48,7 @@ Open the .env file in your preferred text editor and add your wallet's private k
 ```
 WALLET=<your-private-key-here>
 RPC_URL=https://api.pioneer.kroma.network
+BUNDLER_URL=https://bundler.pioneer.kroma.network
 ```
 
 Replace <your-private-key-here> with the private key of your wallet. Ensure this key is kept secure and never shared publicly.
