@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "hardhat": "^2.22.8",
+    "hardhat": "^2.22.13",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },

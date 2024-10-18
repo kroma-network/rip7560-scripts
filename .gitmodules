@@ -1,0 +1,15 @@
+[submodule "@bundler-spec-tests"]
+	path = @bundler-spec-tests
+	url = https://github.com/eth-infinitism/bundler-spec-tests.git
+	branch = master
+[submodule "@rip7560"]
+	path = @rip7560
+	url = git@github.com:eth-infinitism/rip7560_contracts.git
+[submodule "@account-abstraction"]
+	path = @account-abstraction
+	url = https://github.com/eth-infinitism/account-abstraction.git
+	branch = develop
+[submodule "spec"]
+	path = spec
+	url = https://github.com/eth-infinitism/bundler-spec.git
+	branch = main

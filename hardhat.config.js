@@ -6,7 +6,16 @@ module.exports = {
         chainId: 11171168
       }
     },
-    solidity: "0.8.24",
+    solidity: {
+        version: "0.8.24",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000
+          },
+          evmVersion: "cancun" // cancun is not default evm in 0.8.24
+        }
+    },
     paths: {
       sources: "./src/contracts",
       tests: "./test",
@@ -14,4 +23,3 @@ module.exports = {
       artifacts: "./artifacts"
     }
 };
-  
