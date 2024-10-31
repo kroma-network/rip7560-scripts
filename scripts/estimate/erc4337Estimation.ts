@@ -1,72 +1,79 @@
-import path from "path";
-import fs from "fs";
-import * as dotenv from "dotenv";
+import { 
+    ContractFunctionRevertedError,
+    BaseError,
+    encodeFunctionData,
+    getContract,
+    Hex,
+    zeroAddress,
+} from "viem-rip7560/src";
 import { 
     getCallData,
-    getRandomAddress,
+    getDummyAddress,
     constructUserOp,
-    getChainId,
-    decodeRevertReason
+    decodeRevertReason,
+    publicClient
 } from "../../src/utils";
-import { Entrypoint_V0_6_Address } from "../../src/types/constants";
-import { UserOperation } from "../../src/types/erc4337UserOp";
-import { ethers, BytesLike } from "ethers";
+import { 
+    Entrypoint_V0_6_Address, 
+    UserOperation, 
+    EntrypointAbi, 
+    transferAbi 
+} from "../../src/types";
 
-dotenv.config();
-
-export async function estimate4337EthTransferGas(account: string, value: number, wallet: ethers.Wallet): Promise<number> {
-    const to = getRandomAddress();
+export async function estimate4337EthTransferGas(account: string, value: number): Promise<number> {
+    const to = getDummyAddress();
     const callData = getCallData(to, value, '0x');
-    const chainId = await getChainId();
-    const userOp = constructUserOp(chainId, account, callData, wallet);
+    const userOp = constructUserOp(account, callData);
 
-    const usedGas = await _estimateUserOpGasLimit(userOp, ethers.constants.AddressZero, '0x');
+    const usedGas = await _estimateUserOpGasLimit(userOp, zeroAddress, '0x');
     return usedGas;
 }
 
-export async function estimate4337Erc20Gas(account: string, erc20: string, value: number, wallet: ethers.Wallet): Promise<number> {
-    const to = getRandomAddress();
-    const iface = new ethers.utils.Interface(['function transfer(address to, uint256 value)']);
-    const callData = getCallData(erc20, 0, iface.encodeFunctionData('transfer', [to, value]));
-    const chainId = await getChainId();
-    const userOp = constructUserOp(chainId, account, callData, wallet);
+export async function estimate4337Erc20Gas(account: string, erc20: string, value: number): Promise<number> {
+    const to = getDummyAddress();
+    const innerCallData = encodeFunctionData({
+        abi: transferAbi,
+        functionName: 'transfer',
+        args: [to, BigInt(value)]
+    });
+    const callData = getCallData(erc20, 0, innerCallData);
+    const userOp = constructUserOp(account, callData);
 
-    const usedGas = await _estimateUserOpGasLimit(userOp, ethers.constants.AddressZero, '0x');
+    const usedGas = await _estimateUserOpGasLimit(userOp, zeroAddress, '0x');
     return usedGas;
 }
 
 async function _estimateUserOpGasLimit(
     userOp: UserOperation,
     target: string,
-    targetCallData: BytesLike,
+    targetCallData: Hex,
 ): Promise<number> {
-    const artifactPath = path.resolve(
-        __dirname,
-        '../../node_modules/@account-abstraction/contracts/artifacts/Entrypoint.json'
-    );
-    const abi = JSON.parse(fs.readFileSync(artifactPath, 'utf8')).abi;
-
-    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-    const entryPointContract = new ethers.Contract(Entrypoint_V0_6_Address, abi, provider);
-
-    const data = entryPointContract.interface.encodeFunctionData('simulateHandleOp', [userOp, target, targetCallData]);
-    const tx = {
-        to: Entrypoint_V0_6_Address,
-        data,
-    };
-
     // Call to simulateHandleOp is always reverted
     try {
-        await provider.send('eth_call', [tx, 'latest']);
+        const entrypoint = getContract({ 
+            abi: EntrypointAbi,
+            address: Entrypoint_V0_6_Address,
+            client: publicClient
+        });
+        await entrypoint.read.simulateHandleOp([userOp, target, targetCallData]);
     } catch (error: any) {
-        const errorData = decodeRevertReason(error, true, entryPointContract);
-        if (errorData === null) {
-            throw new Error('Failed to decode revert reason');
-        }
-        const parts = errorData.split(',');
+        if (error instanceof BaseError) {
+            const revertError = error.walk(error => error instanceof ContractFunctionRevertedError)
+            if (revertError instanceof ContractFunctionRevertedError) {
+                const errorData = revertError.data
+                if (errorData === undefined) {
+                    throw new Error('Failed to decode revert reason');
+                }
+                const errorDecoded = decodeRevertReason(errorData, true);
+                    if (errorDecoded === null) {
+                        throw new Error('Failed to decode revert reason');
+                    }
+                    const parts = errorDecoded.split(',');
 
-        const extractedNumber = parseInt(parts[1], 10);
-        return extractedNumber;
+                    const extractedNumber = parseInt(parts[1], 10);
+                    return extractedNumber;
+                }
+          }        
     }
 
     // Code should not reach here

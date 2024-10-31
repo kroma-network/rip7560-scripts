@@ -6,8 +6,8 @@ and [RIP-7712](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7712.md), o
 
 The implementation is fully open-sourced on the following repositories:
 
-- [Execution client (geth)](https://github.com/kroma-network/7560-poc-geth): inspired by the [work of eth-infinitism](https://github.com/eth-infinitism/go-ethereum).
-- [Consensus client (optimism)](https://github.com/kroma-network/7560-poc-optimism)
+- [Execution client (geth)](https://github.com/kroma-network/7560-geth): inspired by the [work of eth-infinitism](https://github.com/eth-infinitism/go-ethereum).
+- [Consensus client (optimism)](https://github.com/kroma-network/7560-optimism)
 - [RIP-7560 compatible bundler](https://github.com/kroma-network/rip7560-bundler): inspired by the [Stackup ERC-4337 bundler](https://github.com/stackup-wallet/stackup-bundler).
 
 For more information, please visit the following pages:
@@ -18,6 +18,12 @@ For more information, please visit the following pages:
 - [Telegram Group for support](https://t.me/rip7560_pioneer)
 - [Spec Thread on Optimism Spec Repository](https://github.com/ethereum-optimism/specs/discussions/202)
 
+### Required Tools
+
+- [Foundry](https://github.com/foundry-rs/foundry#installation)
+- [Node](https://nodejs.org/en/)
+- [bun](https://bun.sh/docs/installation)
+
 ### Setup
 
 1. Install dependencies.
@@ -25,8 +31,10 @@ For more information, please visit the following pages:
 Ensure you have Node.js installed, then run the following command to install the necessary dependencies:
 
 ```
-npm install
+pnpm install
 ```
+
+This will also install [viem-rip7560](https://github.com/kroma-network/viem-rip7560) submodule, which is revised version of [viem](https://viem.sh/) for RIP-7560 transactions.
 
 2. Obtain test ETH from the faucet.
 
@@ -58,13 +66,13 @@ Replace <your-private-key-here> with the private key of your wallet. Ensure this
 To execute gas estimations for RIP-7560:
 
 ```
-npm run estimate
+pnpm run estimate
 ```
 
 After running the estimations, you can generate a graph to visualize the gas usage:
 
 ```
-npm run draw-graph
+pnpm run draw-graph
 ```
 
 ### RIP-7560 Send Transaction
@@ -72,14 +80,7 @@ npm run draw-graph
 To send a RIP-7560 transaction to Pioneer Alpha, run the following command.
 
 ```
-npm run send-tx
-```
-
-If you already deployed a RIP-7560 Account and has its address, you can simply run this command
-to skip the deployment process.
-
-```
-npm run send-tx --address <ACCOUNT_ADDRESS>
+pnpm run send-tx
 ```
 
 ### Additional Resources

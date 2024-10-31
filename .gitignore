@@ -4,3 +4,8 @@
 /artifacts
 /cache
 .idea/
+
+# Foundry
+broadcast/
+out/
+cache/

@@ -1,27 +1,17 @@
-import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import { Accounts } from "../deploy/setUp";
-import {
-    estimate4337EthTransferGas,
-    estimate7560EthTransferGasLegacyNonce
-} from ".";
-import { ethers } from "ethers";
-
-dotenv.config();
+import { estimate4337EthTransferGas } from "./erc4337Estimation";
+import { estimate7560EthTransferGasLegacyNonce } from "./rip7560Estimation";
 
 export async function estimateEthTransfer(accounts: Accounts) {
-    // Set up the provider and wallet
-    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-
     // Estimate gas for ETH transfer
-    let totalUsedGasIn4337 = await estimate4337EthTransferGas(accounts.addr4337, 1, wallet);
+    let totalUsedGasIn4337 = await estimate4337EthTransferGas(accounts.addr4337, 1);
     console.log(`Total gas used for ETH transfer in 4337: ${totalUsedGasIn4337}`);
 
     // Estimate gas for ETH transfer in RIP7560
     const estimateRes = await estimate7560EthTransferGasLegacyNonce(accounts.addr7560, 1);
-    const totalUsedGasIn7560 = Number(estimateRes.validationGasLimit) + Number(estimateRes.executionGasLimit);
+    const totalUsedGasIn7560 = Number(estimateRes.verificationGasLimit) + Number(estimateRes.callGasLimit);
     console.log(`Total gas used for ETH transfer in 7560: ${totalUsedGasIn7560}`);
 
     const result = {
