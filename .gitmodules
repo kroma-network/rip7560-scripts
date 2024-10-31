@@ -1,0 +1,3 @@
+[submodule "viem-rip7560"]
+	path = viem-rip7560
+	url = git@github.com:kroma-network/viem-rip7560.git
