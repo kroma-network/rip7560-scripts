@@ -7,7 +7,6 @@ import {
     Erc4337Account,
     MockErc20,
 } from "./constants";
-import { UserOperation } from "./userOp";
 
 export { 
     MockERC20Abi, 
@@ -19,6 +18,5 @@ export {
     Rip7560Account, 
     Erc4337Factory, 
     Erc4337Account, 
-    MockErc20, 
-    UserOperation 
+    MockErc20
 };

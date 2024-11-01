@@ -15,10 +15,10 @@ import {
 } from "../../src/utils";
 import { 
     Entrypoint_V0_6_Address, 
-    UserOperation, 
     EntrypointAbi, 
     transferAbi 
 } from "../../src/types";
+import { UserOperation } from "../../src/types/userOp";
 
 export async function estimate4337EthTransferGas(account: string, value: number): Promise<number> {
     const to = getDummyAddress();
