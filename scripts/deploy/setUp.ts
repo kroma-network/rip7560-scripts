@@ -34,6 +34,17 @@ export async function fundAccountsWithEth(): Promise<Accounts> {
     return { addr4337: Erc4337Account, addr7560: Rip7560Account };
 }
 
+export async function fundAddressWithEth(addr: Hex) {
+    console.log(`Sending 0.1 ETH to ${addr}...`);
+    const hash = await walletClient.sendTransaction({
+        account: eoaWallet,
+        to: addr,
+        value: parseEther('0.1'),
+    });
+    await publicClient.waitForTransactionReceipt({hash});
+    console.log(`Sent 0.1 ETH to ${addr}`);
+}
+
 export async function fundAccountsWithErc20(addr1: string, addr2: string) {
     console.log(`Minting 1000 tokens to ${addr1}...`);
     let hash = await walletClient.writeContract({
