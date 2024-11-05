@@ -1,55 +1,39 @@
-import { Rip7560Transaction } from "../../src/types/rip7560Transaction";
+import { Hex } from "viem-rip7560/src";
+import { toSimpleNativeSmartAccount } from "viem-rip7560/src/experimental";
 import { 
     getNonce, 
     getCallData,
-    getRandomAddress,
-    getChainId,
-    constructRip7560Transaction,
-    signRip7560Transaction,
-    increaseGasLimit
+    getDummyAddress,
+    publicClient, 
+    bundlerClient, 
+    eoaWallet, 
+    walletClient 
 } from "../../src/utils";
-import { estimateRip7560TransactionGasLimit } from "../estimate/rip7560Estimation";
 
-export async function sendRip7560Transaction(account: string): Promise<string> {
-    let nonce = await getNonce(account);
-    if (nonce === '0x0') {
-        nonce = '0x01';
+export async function sendRip7560Transaction(sender: Hex): Promise<Hex> {
+    const account = await toSimpleNativeSmartAccount({
+        client: publicClient,
+        bundlerClient,
+        address: sender,
+        owner: eoaWallet,
+    })
+    
+    let nonce = await getNonce(sender);
+    if (nonce === 0) {
+        nonce = 1;
     }
-    const to = getRandomAddress();
-    const callData = getCallData(to, 1, '0x');
-    const chainId = await getChainId();
-    let rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
+    const to = getDummyAddress();
+    const executionData = getCallData(to, 1, '0x');
 
-    // Estimate gas limit and apply 1.1 multiplier 
-    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
-    rip7560Transaction.verificationGasLimit = increaseGasLimit(estimateRes.validationGasLimit);
-    rip7560Transaction.gas = increaseGasLimit(estimateRes.executionGasLimit);
-    rip7560Transaction.authorizationData = await signRip7560Transaction(rip7560Transaction);
+    const hash = await walletClient.sendTransaction({
+        nonce,
+        sender,
+        executionData,
+        verificationGasLimit: BigInt(0),
+        account,
+    })
 
-    return await _sendRip7560TransactionsBundle(rip7560Transaction);
-}
+    await publicClient.waitForTransactionReceipt({ hash });
 
-async function _sendRip7560TransactionsBundle(
-    rip7560Transaction: Rip7560Transaction
-): Promise<string> {
-    const response = await fetch(
-        `${process.env.BUNDLER_URL}`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'eth_sendTransaction',
-                params: [rip7560Transaction], // TransactionArgs
-                id: 1,
-            }),
-        }
-    ).then((res) => {
-        return res.json();
-    }
-    );
-
-    return response.result
+    return hash;
 }

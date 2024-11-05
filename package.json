@@ -15,9 +15,10 @@
   },
   "scripts": {
     "build": "npx hardhat compile",
-    "estimate": "ts-node scripts/estimate/main.ts",
-    "draw-graph": "ts-node scripts/graph/index.ts",
-    "send-tx": "ts-node scripts/sendTransaction/index.ts"
+    "estimate": "bun run scripts/estimate/main.ts",
+    "draw-graph": "bun run scripts/graph/index.ts",
+    "send-tx": "bun run scripts/sendTransaction/index.ts",
+    "postinstall": "git submodule update --init --recursive && cd viem-rip7560 && pnpm install"
   },
   "lib": [
     "ES2020",

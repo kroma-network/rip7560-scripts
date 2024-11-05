@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import QuickChart from 'quickchart-js';
-import { setUpAccounts, setUpErc20 } from '../deploy/setUp';
+import { fundAccountsWithErc20, fundAccountsWithEth } from '../deploy/setUp';
 import { estimateEthTransfer } from "../estimate/estimateEthTransfer";
 import { estimateErc20 } from "../estimate/estimateErc20";
 
@@ -16,8 +16,8 @@ async function main() {
     } catch (error) {
         console.log('Error: ', error);
         console.log('Estimating gas usage...');
-        const accounts = await setUpAccounts();
-        const erc20Addr = await setUpErc20(accounts.addr4337, accounts.addr7560);
+        const accounts = await fundAccountsWithEth();
+        const erc20Addr = await fundAccountsWithErc20(accounts.addr4337, accounts.addr7560);
 
         filePath1 = await estimateEthTransfer(accounts);
         filePath2 = await estimateErc20(accounts, erc20Addr);

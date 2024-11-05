@@ -1,127 +1,155 @@
-import dotenv  from "dotenv";
-import { BytesLike, ethers } from "ethers";
-import { Rip7560Transaction, EstimateRip7560TransactionGasResponse } from "../../src/types/rip7560Transaction";
 import { 
-    constructRip7560Transaction,
+    EstimateRIP7560TransactionGasReturnType, 
+    toSimpleNativeSmartAccount 
+} from "viem-rip7560/src/experimental";
+import { estimateGas } from "viem-rip7560/src/actions";
+import { encodeFunctionData, Hex } from "viem-rip7560/src";
+import { 
     getNonce,
-    getNonceFromNonceManager,
     getCallData,
-    getRandomAddress,
-    getAddress,
-    getDeployerData,
-    getChainId
+    getDummyAddress,
+    bundlerClient, 
+    publicClient, 
+    eoaWallet 
 } from "../../src/utils";
-
-dotenv.config();
+import { transferAbi } from "../../src/types";
 
 /* ETH Transfer Estimation */
-export async function estimate7560EthTransferGasLegacyNonce(account: string, value: number): Promise<EstimateRip7560TransactionGasResponse> {
-    let nonce = await getNonce(account);
-    if (nonce === '0x0') {
-        nonce = '0x1';
-    }
-    const to = getRandomAddress();
-    const callData = getCallData(to, value, '0x');
-    const chainId = await getChainId();
-    const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
+export async function estimate7560EthTransferGasLegacyNonce(sender: Hex, value: number): Promise<EstimateRIP7560TransactionGasReturnType> {
+    const account = await toSimpleNativeSmartAccount({
+        client: publicClient,
+        bundlerClient,
+        address: sender,
+        owner: eoaWallet,
+    })
 
-    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
-    return estimateRes;
+    let nonce = await getNonce(sender);
+    if (nonce === 0) {
+        nonce = 1;
+    }
+    const to = getDummyAddress();
+    const executionData = getCallData(to, value, '0x');
+
+    return await estimateGas(publicClient, {
+        nonce,
+        sender,
+        executionData,
+        verificationGasLimit: BigInt(0),
+        account,
+    }) as EstimateRIP7560TransactionGasReturnType;;
 }
 
-export async function estimate7560EthTransferGasNonceManager(account: string, key: BytesLike, value: number): Promise<EstimateRip7560TransactionGasResponse> {
-    const nonce = await getNonceFromNonceManager(account, key);
-    const to = getRandomAddress();
-    const callData = getCallData(to, value, '0x');
-    const chainId = await getChainId();
-    const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
+export async function estimate7560EthTransferGasNonceManager(sender: Hex, value: number): Promise<EstimateRIP7560TransactionGasReturnType> {
+    const account = await toSimpleNativeSmartAccount({
+        client: publicClient,
+        bundlerClient,
+        address: sender,
+        owner: eoaWallet,
+    })
+    
+    const to = getDummyAddress();
+    const executionData = getCallData(to, value, '0x');
 
-    const estimateRes = estimateRip7560TransactionGasLimit(rip7560Transaction);
-    return estimateRes;
+    return await estimateGas(publicClient, {
+        sender,
+        executionData,
+        verificationGasLimit: BigInt(0),
+        account,
+    }) as EstimateRIP7560TransactionGasReturnType;;
 }
 
 /* ERC20 Transfer Estimation */
-export async function estimate7560Erc20TransferGasLegacyNonce(account: string, erc20: string, value: number): Promise<EstimateRip7560TransactionGasResponse> {
-    let nonce = await getNonce(account);
-    if (nonce === '0x0') {
-        nonce = '0x1';
+/// TODO: Change the calldata to directly call transfer function
+export async function estimate7560Erc20TransferGasLegacyNonce(sender: Hex, erc20: string, value: number): Promise<EstimateRIP7560TransactionGasReturnType> {
+    const account = await toSimpleNativeSmartAccount({
+        client: publicClient,
+        bundlerClient,
+        address: sender,
+        owner: eoaWallet,
+    })
+
+    let nonce = await getNonce(sender);
+    if (nonce === 0) {
+        nonce = 1;
     }
-    const to = getRandomAddress();
-    const iface = new ethers.utils.Interface(['function transfer(address to, uint256 value)']);
-    const callData = getCallData(erc20, 0, iface.encodeFunctionData('transfer', [to, value]));
-    const chainId = await getChainId();
+    const to = getDummyAddress();
+    const innerCallData = encodeFunctionData({
+        abi: transferAbi,
+        functionName: 'transfer',
+        args: [to, BigInt(value)]
+    });    
+    const executionData = getCallData(erc20, 0, innerCallData);
 
-    const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
-
-    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
-    return estimateRes;
+    return await estimateGas(publicClient, {
+        nonce,
+        sender,
+        executionData,
+        verificationGasLimit: BigInt(0),
+        account,
+    }) as EstimateRIP7560TransactionGasReturnType;;
 }
 
-export async function estimate7560Erc20TransferGasNonceManager(account: string, erc20: string, key: string, value: number): Promise<EstimateRip7560TransactionGasResponse> {
-    const nonce = await getNonceFromNonceManager(account, key);
-    const to = getRandomAddress();
-    const iface = new ethers.utils.Interface(['function transfer(address to, uint256 value)']);
-    const callData = getCallData(erc20, 0, iface.encodeFunctionData('transfer', [to, value]));    
-    const chainId = await getChainId();
+export async function estimate7560Erc20TransferGasNonceManager(sender: Hex, erc20: string, value: number): Promise<EstimateRIP7560TransactionGasReturnType> {
+    const account = await toSimpleNativeSmartAccount({
+        client: publicClient,
+        bundlerClient,
+        address: sender,
+        owner: eoaWallet,
+    })
 
-    const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData);
+    const to = getDummyAddress();
+    const innerCallData = encodeFunctionData({
+        abi: transferAbi,
+        functionName: 'transfer',
+        args: [to, BigInt(value)]
+    });
+    const executionData = getCallData(erc20, 0, innerCallData);
 
-    const estimateRes = estimateRip7560TransactionGasLimit(rip7560Transaction);
-    return estimateRes;
+    return await estimateGas(publicClient, {
+        sender,
+        executionData,
+        verificationGasLimit: BigInt(0),
+        account,
+    }) as EstimateRIP7560TransactionGasReturnType;;
 }
 
-/* Deployment Estimation */
-export async function estimate7560DeploymentGasLegacyNonce(owner: string, factory: string, salt: number): Promise<EstimateRip7560TransactionGasResponse> {
-    const account = await getAddress(factory, owner, salt);
-    const nonce = await getNonce(account);
-    const callData = '0x';
-    const deployerData = getDeployerData(owner, salt);
-    const chainId = await getChainId();
+// /* Deployment Estimation */
+// export async function estimate7560DeploymentGasLegacyNonce(): Promise<EstimateRIP7560TransactionGasReturnType> {
+//     const smartAccount = await toSimpleNativeSmartAccount({
+//         client: publicClient,
+//         owner: eoaWallet,
+//     })
+//     const deployerArgs = await smartAccount.getDeployerArgs();
 
-    const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData, factory, deployerData);
+//     const sender = await smartAccount.getAddress();
+//     const nonce = await getNonce(sender);
+//     const executionData = '0x';
+   
+//     return await estimateGas(publicClient, {
+//         nonce,
+//         sender,
+//         executionData,
+//         verificationGasLimit: 0n,
+//         deployer: deployerArgs.deployer, 
+//         deployerData: deployerArgs.deployerData
+//     }) as EstimateRIP7560TransactionGasReturnType;
+// }
 
-    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
-    return estimateRes;
-}
+// export async function estimate7560DeploymentGasNonceManager(): Promise<EstimateRIP7560TransactionGasReturnType> {
+//     const smartAccount = await toSimpleNativeSmartAccount({
+//         client: publicClient,
+//         owner: eoaWallet,
+//     })
+//     const deployerArgs = await smartAccount.getDeployerArgs();
 
-export async function estimate7560DeploymentGasNonceManager(owner: string, factory: string, salt: number, key: BytesLike): Promise<EstimateRip7560TransactionGasResponse> {
-    const account = await getAddress(factory, owner, salt);
-    const nonce = await getNonceFromNonceManager(owner, key);
-    const callData = '0x';
-    const deployerData = getDeployerData(owner, salt);
-    const chainId = await getChainId();
-
-    const rip7560Transaction = constructRip7560Transaction(chainId, nonce, account, callData, factory, deployerData);
-
-    const estimateRes = await estimateRip7560TransactionGasLimit(rip7560Transaction);
-    return estimateRes;
-}
-
-
-export async function estimateRip7560TransactionGasLimit(
-    rip7560Transaction: Rip7560Transaction
-): Promise<EstimateRip7560TransactionGasResponse> {
-    const response = await fetch(
-        `${process.env.RPC_URL}`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'eth_estimateRip7560TransactionGas',
-                params: [rip7560Transaction],
-                id: 1,
-            }),
-        }
-    ).then((res) => {
-        return res.json();
-    }
-    );
-
-    return {
-        validationGasLimit: response.result.validationGas,
-        executionGasLimit: response.result.executionGas,
-    }
-}
+//     const sender = await smartAccount.getAddress();
+//     const executionData = '0x';
+   
+//     return await estimateGas(publicClient, {
+//         sender,
+//         executionData,
+//         verificationGasLimit: 0n,
+//         deployer: deployerArgs.deployer, 
+//         deployerData: deployerArgs.deployerData
+//     }) as EstimateRIP7560TransactionGasReturnType;
+// }

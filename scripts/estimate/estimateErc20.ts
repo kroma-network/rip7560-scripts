@@ -1,27 +1,17 @@
-import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import { Accounts } from "../deploy/setUp";
-import {
-    estimate4337Erc20Gas,
-    estimate7560Erc20TransferGasLegacyNonce,
-} from ".";
-import { ethers } from "ethers";
-
-dotenv.config();
+import { estimate4337Erc20Gas } from "./erc4337Estimation";
+import { estimate7560Erc20TransferGasLegacyNonce } from "./rip7560Estimation";
 
 export async function estimateErc20(accounts: Accounts, erc20Addr: string) {
-    // Set up the provider and wallet
-    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-
     // Estimate gas for ETH transfer
-    let totalUsedGasIn4337 = await estimate4337Erc20Gas(accounts.addr4337, erc20Addr, 1, wallet);
+    let totalUsedGasIn4337 = await estimate4337Erc20Gas(accounts.addr4337, erc20Addr, 1);
     console.log(`Total gas used for ERC20 transfer in 4337: ${totalUsedGasIn4337}`);
 
     // Estimate gas for a transfer with ERC20 token
     const estimateRes = await estimate7560Erc20TransferGasLegacyNonce(accounts.addr7560, erc20Addr, 1);
-    const totalUsedGasIn7560 = Number(estimateRes.validationGasLimit) + Number(estimateRes.executionGasLimit);
+    const totalUsedGasIn7560 = Number(estimateRes.verificationGasLimit) + Number(estimateRes.callGasLimit);
     console.log(`Total gas used for ERC20 transfer in 7560: ${totalUsedGasIn7560}`);
 
     const result = {
