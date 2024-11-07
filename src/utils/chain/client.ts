@@ -14,6 +14,6 @@ export const publicClient = createPublicClient({
 
 export const bundlerClient = createPublicClient({
     chain: pioneerChain,
-    transport: http('http://localhost:7560/rpc'), // TODO: change this
+    transport: http(process.env.BUNDLER_URL),
 });
 export const eoaWallet = privateKeyToAccount(process.env.PRIVATE_KEY! as Hex);

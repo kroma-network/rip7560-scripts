@@ -6,7 +6,7 @@ export const pioneerChain = /*#__PURE__*/ defineChain({
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
     default: {
-      http: ['http://127.0.0.1:38545'],
+      http: [process.env.RPC_URL || 'http://127.0.0.1:38545'],
     },
   },
   blockExplorers: {
