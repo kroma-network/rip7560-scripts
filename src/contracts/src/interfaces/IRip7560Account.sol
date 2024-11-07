@@ -25,5 +25,5 @@ interface IRip7560Account {
         uint256 version,
         bytes32 txHash,
         bytes calldata transaction
-    ) external returns (bytes32 validationData);
+    ) external;
 }

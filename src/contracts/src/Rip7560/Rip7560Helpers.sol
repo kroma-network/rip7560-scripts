@@ -1,19 +1,48 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.23;
 
-bytes4 constant MAGIC_VALUE_SENDER = 0xbf45c166;
+import "../interfaces/IRip7560EntryPoint.sol";
 
-bytes4 constant MAGIC_VALUE_SIGFAIL = 0x31665494;
+address constant ENTRY_POINT = 0x0000000000000000000000000000000000007560;
 
-function _packValidationData(
-    bytes4 magicValue,
-    uint48 validUntil,
-    uint48 validAfter
-) pure returns (bytes32) {
-    return
-        bytes32(
-            uint256(uint32(magicValue)) |
-                ((uint256(validUntil)) << 160) |
-                (uint256(validAfter) << (160 + 48))
+library Rip7560Helpers {
+    //struct version, as defined in RIP-7560
+    uint constant VERSION = 0;
+
+    function accountAcceptTransaction(
+        uint48 validAfter,
+        uint48 validUntil
+    ) internal {
+        (bool success, ) = ENTRY_POINT.call(
+            abi.encodeCall(
+                IRip7560EntryPoint.acceptAccount,
+                (validAfter, validUntil)
+            )
         );
+        require(success);
+    }
+
+    function sigFailTransaction(uint48 validAfter, uint48 validUntil) internal {
+        (bool success, ) = ENTRY_POINT.call(
+            abi.encodeCall(
+                IRip7560EntryPoint.sigFailAccount,
+                (validAfter, validUntil)
+            )
+        );
+        require(success);
+    }
+
+    function paymasterAcceptTransaction(
+        bytes memory context,
+        uint256 validAfter,
+        uint256 validUntil
+    ) internal {
+        (bool success, ) = ENTRY_POINT.call(
+            abi.encodeCall(
+                IRip7560EntryPoint.acceptPaymaster,
+                (validAfter, validUntil, context)
+            )
+        );
+        require(success);
+    }
 }
