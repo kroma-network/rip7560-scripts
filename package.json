@@ -1,8 +1,12 @@
 {
   "devDependencies": {
+    "@wasm-tool/wasm-pack-plugin": "^1.7.0",
     "hardhat": "^2.22.8",
+    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "@account-abstraction/contracts": "^0.6.0",
@@ -10,14 +14,15 @@
     "dotenv": "^16.4.5",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.7.0",
+    "pqc_dilithium": "file:./extensions/dilithium-node",
     "quickchart-js": "^3.1.3",
     "rlp": "^3.0.0"
   },
   "scripts": {
-    "build": "npx hardhat compile",
     "estimate": "bun run scripts/estimate/main.ts",
     "draw-graph": "bun run scripts/graph/index.ts",
     "send-tx": "bun run scripts/sendTransaction/index.ts",
+    "send-tx-quantum": "bun run scripts/sendTransaction/index.ts --quantum",
     "postinstall": "git submodule update --init --recursive && cd viem-rip7560 && pnpm install"
   },
   "lib": [

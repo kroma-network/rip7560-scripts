@@ -83,6 +83,12 @@ To send a RIP-7560 transaction to Pioneer Alpha, run the following command.
 pnpm run send-tx
 ```
 
+If you wanna send a quantum-resistant transaction to Pioneer Alpha, run the following command.
+
+```
+pnpm run send-tx-quantum
+```
+
 ### Additional Resources
 
 - For more detailed information, please refer to the [official documentation](https://docs.pioneer.kroma.network).
