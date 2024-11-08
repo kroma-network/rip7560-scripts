@@ -70,7 +70,6 @@ export async function dilithiumWallet(address: Hex) {
       },
     
       async getDeployerArgs() {
-        console.error('`getDeployerArgs` is not implemented.')
         return {
           deployer: undefined,
           deployerData: undefined,

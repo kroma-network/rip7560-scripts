@@ -98,7 +98,7 @@ contract DilithiumSimpleAccount is Rip7560BaseAccount, UUPSUpgradeable {
         emit Rip7560SimpleAccountInitialized(_entryPoint, _publicKey);
     }
 
-    // Require the function call went through EntryPoint or owner
+    // Require the function call went through EntryPoint
     function _requireFromEntryPoint() internal view override {
         require(msg.sender == _entryPoint, "account: not Owner or EntryPoint");
     }
@@ -107,7 +107,7 @@ contract DilithiumSimpleAccount is Rip7560BaseAccount, UUPSUpgradeable {
     function _validateSignature(
         bytes calldata transaction,
         bytes32 txHash
-    ) internal virtual override returns (bytes32 validationData) {
+    ) internal virtual override {
         TransactionType4 memory _tx = abi.decode(
             transaction,
             (TransactionType4)
@@ -120,17 +120,18 @@ contract DilithiumSimpleAccount is Rip7560BaseAccount, UUPSUpgradeable {
         ) {
             sig = _sig;
         } catch {
-            return _packValidationData(MAGIC_VALUE_SIGFAIL, 0, 0);
+            Rip7560Helpers.sigFailTransaction(0, 0);
         }
 
         try this.verify(sig, epk, txHash) returns (bool success) {
             if (success) {
-                return _packValidationData(MAGIC_VALUE_SENDER, 0, 0);
+                Rip7560Helpers.accountAcceptTransaction(0, 0);
+            } else {
+                Rip7560Helpers.sigFailTransaction(0, 0);
             }
         } catch {
-            return _packValidationData(MAGIC_VALUE_SIGFAIL, 0, 0);
+            Rip7560Helpers.sigFailTransaction(0, 0);
         }
-        return _packValidationData(MAGIC_VALUE_SIGFAIL, 0, 0);
     }
 
     function unpackSig(

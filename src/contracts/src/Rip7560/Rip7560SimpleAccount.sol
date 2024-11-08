@@ -113,16 +113,16 @@ contract Rip7560SimpleAccount is Rip7560BaseAccount, UUPSUpgradeable {
     function _validateSignature(
         bytes calldata transaction,
         bytes32 txHash
-    ) internal virtual override returns (bytes32 validationData) {
-        // TODO: find better way to decode transaction
+    ) internal virtual override {
         TransactionType4 memory _tx = abi.decode(
             transaction,
             (TransactionType4)
         );
         if (owner != txHash.recover(_tx.authorizationData)) {
-            return _packValidationData(MAGIC_VALUE_SIGFAIL, 0, 0);
+            Rip7560Helpers.sigFailTransaction(0, 0);
+        } else {
+            Rip7560Helpers.accountAcceptTransaction(0, 0);
         }
-        return _packValidationData(MAGIC_VALUE_SENDER, 0, 0);
     }
 
     function _call(address target, uint256 value, bytes memory data) internal {
