@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "cd viem-rip7560 && pnpm build && cd ../ && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "git submodule update --init --recursive && cd viem-rip7560 && pnpm install"
