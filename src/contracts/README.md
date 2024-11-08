@@ -9,7 +9,7 @@ $ forge compile
 ### Deploy RIP-7560 and ERC-4337 SimpleAccount
 
 ```shell
-$ source .env && forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
+$ source .env && forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast | grep "LOG" > temp.txt && cat temp.txt && rm temp.txt
 ```
 
 ### Deploy quantum-safe Dilithium SimpleAccount

@@ -25,19 +25,19 @@ contract DeployScript is Script {
         vm.startBroadcast();
 
         rip7560Factory = new Rip7560SimpleAccountFactory();
-        console.log("rip7560Factory: ", address(rip7560Factory));
+        console.log("[LOG] rip7560Factory: ", address(rip7560Factory));
 
         rip7560Account = rip7560Factory.createAccount(owner, 0);
-        console.log("rip7560Account: ", address(rip7560Account));
+        console.log("[LOG] rip7560Account: ", address(rip7560Account));
 
         erc4337Factory = new SimpleAccountFactory(entrypoint);
-        console.log("erc4337Factory: ", address(erc4337Factory));
+        console.log("[LOG] erc4337Factory: ", address(erc4337Factory));
 
         simpleAccount = erc4337Factory.createAccount(owner, 0);
-        console.log("simpleAccount: ", address(simpleAccount));
+        console.log("[LOG] simpleAccount: ", address(simpleAccount));
 
         mockERC20 = new MockERC20();
-        console.log("mockERC20: ", address(mockERC20));
+        console.log("[LOG] mockERC20: ", address(mockERC20));
 
         vm.stopBroadcast();
     }

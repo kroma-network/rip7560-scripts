@@ -69,7 +69,7 @@ contract DeployDilithiumScript is Script {
         );
 
         console.log(
-            "dilithiumSimpleAccount: ",
+            "[LOG] dilithiumSimpleAccount: ",
             address(dilithiumSimpleAccount)
         );
 
