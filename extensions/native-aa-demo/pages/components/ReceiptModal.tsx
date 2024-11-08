@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import ReactJson from 'react-json-view';
+import dynamic from 'next/dynamic';
 import styles from '../../styles/Home.module.css';
 import { stringifyBigInts } from 'utils/getters';
 
@@ -11,6 +11,8 @@ interface ReceiptModalProps {
 	transactionReceipt: any;
 	isError: boolean;
 }
+
+const ReactJson = dynamic(() => import('react-json-view'), { ssr: false });
 
 const ReceiptModal: React.FC<ReceiptModalProps> = ({ 
 	isOpen, onClose, transactionReceipt, isError
