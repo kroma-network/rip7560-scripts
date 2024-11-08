@@ -3,6 +3,7 @@ import styles from '../../styles/Home.module.css'
 import { useState } from 'react'
 import ConfirmModal from './ConfirmModal'
 import ReceiptModal from './ReceiptModal'
+import LoadingOverlay from './LoadingOverlay'
 import { parseEther } from 'viem-rip7560/src'
 
 const TransactionCard = () => {
@@ -10,8 +11,9 @@ const TransactionCard = () => {
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState<boolean>(false);
   const [transactionType, setTransactionType] = useState<string>('');
   const [amount, setAmount] = useState<bigint>(BigInt(0));
-  const [transactionReceipt, setTransactionReceipt] = useState<any>(null);
+  const [hash, setHash] = useState<any>(null);
   const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const openConfirmModal = (type: string, amt: bigint) => {
     setTransactionType(type);
@@ -49,16 +51,20 @@ const TransactionCard = () => {
         onClose={() => setIsConfirmModalOpen(false)}
         transactionType={transactionType}
         amount={amount}
-        transactionReceipt={transactionReceipt}
+        setHash={setHash}
         setIsReceiptModalOpen={setIsReceiptModalOpen}
         setIsError={setIsError}
+        setIsLoading={setIsLoading}
       />
       <ReceiptModal
         isOpen={isReceiptModalOpen}
         onClose={() => setIsReceiptModalOpen(false)}
-        transactionReceipt={transactionReceipt}
+        hash={hash}
         isError={isError}
+        setIsError={setIsError}
+        setIsLoading={setIsLoading}
       />
+      <LoadingOverlay isLoading={isLoading} />
 		</div>
 	)
 }

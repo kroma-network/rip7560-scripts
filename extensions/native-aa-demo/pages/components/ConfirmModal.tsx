@@ -5,16 +5,17 @@ import styles from '../../styles/Home.module.css';
 import { publicClient } from '../../utils/chain/client';
 import { sendRip7560Transaction } from 'utils/sendRip7560Transaction';
 import { TransactionReceipt } from 'viem-rip7560/src';
+import { Hash } from 'viem-rip7560/src';
 
 interface ConfirmModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	transactionType: string;
 	amount: bigint;
-	transactionReceipt: TransactionReceipt | null;
+  setHash: (value: Hash | null) => void;
 	setIsReceiptModalOpen: (value: boolean) => void;
 	setIsError: (value: boolean) => void;
-	// setIsLoading: (value: boolean) => void;
+	setIsLoading: (value: boolean) => void;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({ 
@@ -22,34 +23,35 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 	onClose,
 	transactionType,
 	amount,
-	transactionReceipt,
+	setHash,
 	setIsReceiptModalOpen,
-	setIsError
+	setIsError,
+	setIsLoading
 }) => {
 	const [recipientAddress, setRecipientAddress] = useState<string>('');
 	const isEthTransfer = transactionType === 'ETH';
-	let receipt = null;
-
+	
+	let hashForTx: Hash | null = null;
 	const handleConfirm = async (transactionType: string, receipientAddress: string) => {
     try {
 			setIsError(false);
+			setIsLoading(true);
 
-      const hash = await sendRip7560Transaction(transactionType, amount, receipientAddress);
-			console.log("Transaction confirmed with hash:", hash);
-
-			const receipt = await publicClient.waitForTransactionReceipt({ hash });
-			console.log("Transaction receipt:", receipt);
+      hashForTx = await sendRip7560Transaction(transactionType, amount, receipientAddress);
+			console.log("Transaction confirmed with hash:", hashForTx);
     } catch (error) {
       console.error("Transaction failed:", error);
-			setIsError(true);			
+			setIsError(true);
+			setIsLoading(false);	
     } finally {
-			onConfirm(receipt);
+			onConfirm(hashForTx);
       onClose();
     }
   };
 
-	const onConfirm = async (transaction: TransactionReceipt | null) => {
-		transactionReceipt = transaction;
+	const onConfirm = async (hashForTx: Hash | null) => {
+		if (!hashForTx) return;
+		setHash(hashForTx);
 		setIsReceiptModalOpen(true);
   };
 

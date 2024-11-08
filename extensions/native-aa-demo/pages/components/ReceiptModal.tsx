@@ -1,22 +1,45 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import styles from '../../styles/Home.module.css';
 import { stringifyBigInts } from 'utils/getters';
+import { Hash } from 'viem-rip7560/src';
+import { publicClient } from 'utils/chain/client';
+import { TransactionReceipt } from 'viem-rip7560/src';
 
 interface ReceiptModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	transactionReceipt: any;
+	hash: Hash | null;
 	isError: boolean;
+	setIsError: (value: boolean) => void;
+	setIsLoading: (value: boolean) => void;
 }
 
 const ReactJson = dynamic(() => import('react-json-view'), { ssr: false });
 
 const ReceiptModal: React.FC<ReceiptModalProps> = ({ 
-	isOpen, onClose, transactionReceipt, isError
+	isOpen, onClose, hash, isError, setIsError, setIsLoading
 }) => {
+	const [transactionReceipt, setTransactionReceipt] = useState<TransactionReceipt | null>(null);
+
+	useEffect(() => {
+    const fetchTransactionReceipt = async () => {
+			if (!hash) return;
+      try {
+        const receipt = await publicClient.waitForTransactionReceipt({ hash });
+        setTransactionReceipt(receipt);
+				setIsLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch transaction receipt:", error);
+        setIsError(true);
+      }
+    };
+
+		fetchTransactionReceipt();
+  }, [hash, isOpen]);
+
 	if (!isOpen) return null;
 
 	return (
