@@ -13,7 +13,7 @@ export async function sendRip7560Transaction(transactionType: string, amount: bi
 	});
 	const executionData = transactionType == 'ETH' 
 		? getCallData(to, amount, '0x') 
-		: getCallData(FQR_ERC20_ADDRESS, amount, erc20InnerCallData);
+		: getCallData(FQR_ERC20_ADDRESS, BigInt(0), erc20InnerCallData);
 
 	const account = await dilithiumWallet(DILITHIUM_WALLET_ADDRESS);
 
