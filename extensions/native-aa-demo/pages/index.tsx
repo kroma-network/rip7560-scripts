@@ -2,8 +2,12 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import TransactionCard from './components/TransactionCard'
+import useMedia from 'use-media';
 
 export default function Home() {
+  const isMobile = useMedia({ maxWidth: '768px' });
+  const imgUrl = isMobile ? '/TitleMobile.png' : '/Title.png';
+
   return (
     <div className={styles.container}>
       <div className={styles.background}>
@@ -12,8 +16,17 @@ export default function Home() {
           <meta name="description" content="quantum-safe future of Ethereum with Native AA" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-
+        
         <main className={styles.main}>
+          <Image
+            src={imgUrl}
+            alt="Title"
+            layout="responsive"
+            width={500}
+            height={200}
+            className={styles.titleImage}
+          />  
+
           <div className={styles.explainer}>
             For this demo, an embedded wallet is preloaded in the browser, allowing you to experience 
             fully quantum-resistant transactions without needing to connect an external wallet. 

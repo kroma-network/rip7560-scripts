@@ -44,6 +44,9 @@ importers:
       typescript:
         specifier: 5.6.3
         version: 5.6.3
+      use-media:
+        specifier: ^1.5.0
+        version: 1.5.0(react@18.3.1)
     devDependencies:
       '@wasm-tool/wasm-pack-plugin':
         specifier: ^1.7.0
@@ -1814,6 +1817,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  use-media@1.5.0:
+    resolution: {integrity: sha512-gEKsAwpqeejjLXllfQLlktok4CX3cpsS0TChDR9VTl3xQ/231jWujjebnJrt+IH50RRO163JPvHVKBj+W+Weqg==}
+    peerDependencies:
+      react: '*'
 
   watchpack@2.4.2:
     resolution: {integrity: sha512-TnbFSbcOCcDgjZ4piURLCbJ3nJhznVh9kw6F6iokjiFPl8ONxe9A6nMDVXDiNbrSfLILs6vB07F7wLBrwPYzJw==}
@@ -3847,6 +3855,10 @@ snapshots:
       use-isomorphic-layout-effect: 1.1.2(@types/react@18.3.12)(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.3.12
+
+  use-media@1.5.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   watchpack@2.4.2:
     dependencies:
