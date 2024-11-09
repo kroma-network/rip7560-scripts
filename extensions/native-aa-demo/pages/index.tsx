@@ -40,6 +40,16 @@ export default function Home() {
           <TransactionCard />
         </main>
 
+        <div className={styles.localDemoLink}>
+          <a
+            href="https://www.notion.so/lightscale/Native-AA-Demo-at-Pioneer-Alpha-139426e6255680b0a93bcc7b8630bc4e#139426e6255680709ba6c603ebb5ee98"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Run demo on my local machine ↗
+          </a>
+        </div>
+
         <footer className={styles.footer}>
           <a
             href="https://kroma.network"

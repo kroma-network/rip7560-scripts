@@ -51,6 +51,22 @@
   text-decoration: underline;
 }
 
+.localDemoLink {
+  text-align: center;
+  margin: 2rem 0;
+  font-size: 1rem;
+}
+
+.localDemoLink a {
+  color: #fff;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.localDemoLink a:hover {
+  color: #d1d1d1;
+}
+
 .footer {
   display: flex;
   flex: 1;
