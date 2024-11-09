@@ -1,6 +1,9 @@
 [submodule "viem-rip7560"]
 	path = viem-rip7560
-	url = git@github.com:kroma-network/viem-rip7560.git
+	url = https://github.com/kroma-network/viem-rip7560.git
+[submodule "extensions/native-aa-demo/viem-rip7560"]
+	path = extensions/native-aa-demo/viem-rip7560
+	url = https://github.com/kroma-network/viem-rip7560.git
 [submodule "src/contracts/lib/dilithium-solidity"]
 	path = src/contracts/lib/dilithium-solidity
-	url = https://github.com/Tetration-Lab/dilithium-solidity
+	url = https://github.com/sm-stack/dilithium-solidity
