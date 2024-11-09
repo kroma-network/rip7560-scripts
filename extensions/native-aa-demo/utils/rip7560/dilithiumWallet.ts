@@ -174,7 +174,7 @@ export async function dilithiumWallet(address: Hex) {
 
 /** @internal */
 export async function sign({ hash }: { hash: Hash }): Promise<Hex> {
-  const res = await fetch(`/api/getAccount/?hash=${hash}`);
+  const res = await fetch(`/api/signature/?hash=${hash}`);
     if (!res.ok) {
       throw new Error(`Error: ${res.status}`);
     }
