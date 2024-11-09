@@ -16,20 +16,27 @@ async function main() {
 
 async function runRip7560() {
     const { addr7560 } = await fundAccountsWithEth();
-    
+
     console.log(`Sending a simple ETH transfer transaction with ${addr7560}...`);
-    const hash = await sendRip7560Transaction(addr7560);
+    const receipt = await sendRip7560Transaction(addr7560);
     console.log('Transaction completed ✅');
-    console.log(`🚀 Go to the explorer and check: https://blockscout.pioneer.kroma.network/tx/${hash}`);
+    console.log('🚀 Transaction receipt info')
+    console.log(stringifyBigInt(receipt))
+}
+
+function stringifyBigInt(obj: any): string {
+  return JSON.stringify(obj, (key, value) =>
+    typeof value === 'bigint' ? value.toString() + 'n' : value, 2);
 }
 
 async function runQuantum() {
     await fundAddressWithEth(DilithiumWalletAddress);
 
     console.log(`Sending a simple ETH transfer transaction with ${DilithiumWalletAddress}...`);
-    const hash = await sendDilithiumTransaction(DilithiumWalletAddress);
+    const receipt = await sendDilithiumTransaction(DilithiumWalletAddress);
     console.log('Transaction completed ✅');
-    console.log(`🚀 Go to the explorer and check: https://blockscout.pioneer.kroma.network/tx/${hash}`);
+    console.log('🚀 Transaction receipt info')
+    console.log(stringifyBigInt(receipt))
 }
 
 main().then(() => process.exit(0))

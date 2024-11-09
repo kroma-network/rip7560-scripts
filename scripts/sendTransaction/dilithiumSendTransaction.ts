@@ -1,15 +1,15 @@
-import { Hex } from "viem-rip7560/src";
+import {Hex, type WaitForTransactionReceiptReturnType} from "viem-rip7560/src";
 import { dilithiumWallet } from "../../src/dilithium/dilithiumWallet";
-import { 
-    getNonce, 
+import {
+    getNonce,
     getCallData,
     getDummyAddress,
-    publicClient, 
+    publicClient,
     walletClient
 } from "../../src/utils";
 import { DilithiumWalletAddress } from "src/types/constants";
 
-export async function sendDilithiumTransaction(sender: Hex): Promise<Hex> {
+export async function sendDilithiumTransaction(sender: Hex): Promise<WaitForTransactionReceiptReturnType> {
     let nonce = await getNonce(sender);
     if (nonce === 0) {
         nonce = 1;
@@ -25,7 +25,5 @@ export async function sendDilithiumTransaction(sender: Hex): Promise<Hex> {
         account: await dilithiumWallet(DilithiumWalletAddress),
     })
 
-    await publicClient.waitForTransactionReceipt({ hash });
-
-    return hash;
+    return await publicClient.waitForTransactionReceipt({ hash });
 }

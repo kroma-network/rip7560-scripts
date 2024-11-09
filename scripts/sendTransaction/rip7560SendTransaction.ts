@@ -1,23 +1,23 @@
-import { Hex } from "viem-rip7560/src";
+import {Hex, type WaitForTransactionReceiptReturnType} from "viem-rip7560/src";
 import { toSimpleNativeSmartAccount } from "viem-rip7560/src/experimental";
-import { 
-    getNonce, 
+import {
+    getNonce,
     getCallData,
     getDummyAddress,
-    publicClient, 
-    bundlerClient, 
-    eoaWallet, 
-    walletClient 
+    publicClient,
+    bundlerClient,
+    eoaWallet,
+    walletClient
 } from "../../src/utils";
 
-export async function sendRip7560Transaction(sender: Hex): Promise<Hex> {
+export async function sendRip7560Transaction(sender: Hex): Promise<WaitForTransactionReceiptReturnType> {
     const account = await toSimpleNativeSmartAccount({
         client: publicClient,
         bundlerClient,
         address: sender,
         owner: eoaWallet,
     })
-    
+
     let nonce = await getNonce(sender);
     if (nonce === 0) {
         nonce = 1;
@@ -33,7 +33,5 @@ export async function sendRip7560Transaction(sender: Hex): Promise<Hex> {
         account,
     })
 
-    await publicClient.waitForTransactionReceipt({ hash });
-
-    return hash;
+    return await publicClient.waitForTransactionReceipt({ hash });
 }
