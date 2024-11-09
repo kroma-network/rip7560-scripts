@@ -254,6 +254,17 @@
   flex: 1;
 }
 
+.toggleLabel {
+  cursor: pointer;
+  color: #ffffff; /* or any accent color */
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.toggleLabel:hover {
+  color: #a8e6a1;
+}
+
 .scrollableContainer {
   max-height: 400px;
   overflow: scroll;
@@ -282,7 +293,6 @@
   font-size: 1rem;
   width: 30%;
   min-height: 4vh;
-
 }
 
 .confirmButton:disabled {
@@ -302,7 +312,6 @@
 .confirmButton:hover:disabled {
   background-color: #5f6060;
 }
-
 
 .cancelButton {
   background-color: #eaeaea;
@@ -341,8 +350,7 @@
 
   .explainer span,
   .explainer a {
-    display: inline-block;
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .card {
