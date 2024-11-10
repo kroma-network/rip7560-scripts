@@ -27,7 +27,7 @@ const TransactionCard = () => {
       <div className={styles.cardRow}>
         <div className={styles.cardColumn}>
           <button
-            onClick={() => openConfirmModal('ETH', parseEther('0.5'))}
+            onClick={() => openConfirmModal('ETH', parseEther('0.1'))}
             className={styles.ethButton}
           >
             Send ETH

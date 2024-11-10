@@ -33,7 +33,7 @@ export default function Home() {
             All transactions made on this site are processed through Pioneer Alpha devnet — a 
             customized OP Stack implementation featuring Native Account Abstraction (RIP-7560). 
             <span>
-              To learn more about Pioneer Alpha, please visit the &nbsp;
+              To learn more about Pioneer Alpha, please visit the&nbsp;
               <a target='_blank' href='https://docs.pioneer.kroma.network/'>official documentation.</a>
             </span>
           </div>
