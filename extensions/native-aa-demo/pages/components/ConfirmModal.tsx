@@ -82,7 +82,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 							recipientAddress.length !== 42
 						}
 					>
-						{isEthTransfer ? 'Send 0.5 ETH' : 'Send 100 FQR'}
+						{isEthTransfer ? 'Send 0.1 ETH' : 'Send 100 FQR'}
 					</button>
 				</div>
 			</div>
